@@ -3,6 +3,7 @@
 class QuizDisplay {
 
     public static function display($quiz) {
+        $quizId = $quiz->getId();
         ?>
         <form action="/schule-quizule/" method="post">
             <div class="quizName" id="<?php echo $quiz->getName()?>">
@@ -17,7 +18,8 @@ class QuizDisplay {
                 }
             }
             ?>
-            <input type="submit" value="wyślij odpowiedzi">
+            <input type="hidden" name="submittedQuizId" id="submittedQuizId" value="<?php print "$quizId" ?>"/>
+            <input type="submit" name="sendAnswers" value="wyślij odpowiedzi">
         </form>
         <?php
     }
@@ -40,7 +42,7 @@ class QuizDisplay {
     static function displayAnswer($answer, $questionId) {
         ?>
         <div class="quizAnswer" id="<?php echo $answer->getId()?>">
-            <input type="radio" id="<?php echo $answer->getContent()?>" name="<?php echo $questionId?>" value="<?php echo $answer->getId()?>">
+            <input type="radio" id="<?php echo $answer->getId()?>" name="answerId:<?php echo $answer->getId()?>" value="<?php echo $answer->getId()?>">
                 <?php echo $answer->getContent()?>
             <label for="html">HTML</label><br>
         </div>

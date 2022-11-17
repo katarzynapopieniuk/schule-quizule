@@ -8,6 +8,7 @@ require_once("./quiz/display/CategoryDisplay.php");
 require_once("./quiz/display/QuizListDisplay.php");
 require_once("./quiz/display/QuizDisplay.php");
 require_once("./quiz/control/QuizClient.php");
+require_once("./quiz/control/QuizResultCalculator.php");
 require_once("./database/control/DatabaseClient.php");
 
 $quizClient = new QuizClient();
@@ -69,6 +70,8 @@ $quizClient = new QuizClient();
             if(is_array($quizzes) || is_object($quizzes)) {
                 QuizDisplay::display($quizzes[0]);
             }
+        } else if(isset($_POST['submittedQuizId'])) {
+            echo QuizResultCalculator::calculateQuizResult($_POST, $quizClient);
         }
     ?>
 
