@@ -1,3 +1,18 @@
+<?php
+
+require_once("./quiz/entity/Quiz.php");
+require_once("./quiz/entity/Answer.php");
+require_once("./quiz/entity/Category.php");
+require_once("./quiz/entity/Question.php");
+require_once("./quiz/display/CategoryDisplay.php");
+require_once("./quiz/display/QuizListDisplay.php");
+require_once("./quiz/display/QuizDisplay.php");
+require_once("./quiz/control/QuizClient.php");
+require_once("./quiz/control/QuizResultCalculator.php");
+require_once("./database/control/DatabaseClient.php");
+
+$quizClient = new QuizClient();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,6 +20,7 @@
     <meta charset="UTF-8">
     <meta name=""viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+    <script src="./utilities.js" type="text/javascript"></script>
 </head>
 <body>
 
@@ -33,16 +49,31 @@
 <!-- Sidebar -->
 <div class="left-column">
     <nav class="topics-menu">
-        <a href="#">Polski</a>
-        <a href="#">Matematyka</a>
-        <a href="#">Przyroda</a>
-        <a href="#">Angielski</a>
-
+        <?php CategoryDisplay::display(Category::getCategories()); ?>
     </nav>
 </div>
 
 <div class="main" style="margin-left:250px">
-    
+    <?php
+        if(isset($_POST['current_category'])) {
+            $category = $_POST['current_category'];
+            echo "Wybrano karegorie: " . $category . "</br>";
+            $quizzes = $quizClient->getQuizzesByCategory($category);
+
+            if(is_array($quizzes) || is_object($quizzes)) {
+                QuizListDisplay::display($quizzes);
+            }
+        } elseif (isset($_POST['current_quiz'])) {
+            $quizId = $_POST['current_quiz'];
+            $quizzes = $quizClient->getQuizzesById($quizId);
+
+            if(is_array($quizzes) || is_object($quizzes)) {
+                QuizDisplay::display($quizzes[0]);
+            }
+        } else if(isset($_POST['submittedQuizId'])) {
+            echo QuizResultCalculator::calculateQuizResult($_POST, $quizClient);
+        }
+    ?>
 
 </div>
 
