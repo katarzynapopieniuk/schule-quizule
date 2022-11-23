@@ -31,7 +31,7 @@ $quizClient = new QuizClient();
   <div class="top-left">
     <a href="#">
     <img src="LOGO.png" width = "20%" height = "20%"></a> 
-        <a href="wyloguj.php"><?php if (isset($_SESSION['logged']))
+        <a href="logging/logout.php"><?php if (isset($_SESSION['logged']))
             {
                 echo "Wyloguj";
             }
@@ -49,8 +49,8 @@ $quizClient = new QuizClient();
     <div class="dropdown">
         <a href="#">Logowanie</a>
         <ul>
-            <li><a href="login.php">Zaloguj</a></li>
-            <li><a href="register.php">Zarejestruj</a></li>
+            <li><a href="logging/login.php">Zaloguj</a></li>
+            <li><a href="logging/register.php">Zarejestruj</a></li>
         </ul>
     </div>
   </nav>
