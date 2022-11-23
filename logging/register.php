@@ -76,7 +76,7 @@ if (isset($_POST['reg_email'])) {
     $mail = new PHPMailer(true);
 
     //Połączenie z bazą danych
-    require_once "connect.php";
+    require_once "../database/control/DatabaseClient.php";
     mysqli_report(MYSQLI_REPORT_STRICT);
 
     try {
@@ -101,7 +101,7 @@ if (isset($_POST['reg_email'])) {
             $mail->send();
 
             //przypisanie połączenia do zmiennej
-            $connect = new PDO('mysql:host=localhost; dbname=schule_quizule', "root", "");
+            $connect = createPDO();
             if (!$connect) {
                 die("Fatal Error: Connection Failed!");
             } else { // sprawdzenie czy w bazie istnieje użytkownik o podanym e-mailu
@@ -157,6 +157,8 @@ if (isset($_POST['reg_email'])) {
                     }
                 }
             }
+            $connect=null;
+            $isEmailExistResult=null;
         } catch (Exception $e) {
             "<br/> Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
         }
@@ -164,7 +166,6 @@ if (isset($_POST['reg_email'])) {
         echo $exception->getMessage();
         echo '<span style="color:red;">Server error. Sorry for that try later!</span>';
         echo '<br/> Developer information: ' . $exception;
-        die();
     }
 }
 ?>

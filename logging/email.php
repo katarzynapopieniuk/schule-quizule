@@ -12,11 +12,11 @@ if (isset($_POST['email'])) {
     $verificationCode = $_POST['verification_code'];
     $isValidationOk = true; //Zmienna innformująca o udanej walidacji
 
-    require_once "connect.php";
+    require_once "../database/control/DatabaseClient.php";
     mysqli_report(MYSQLI_REPORT_STRICT);
 
     try {
-        $connect = new PDO('mysql:host=localhost; dbname=schule_quizule', "root", "");
+        $connect = createPDO();
         if (!$connect) {
             die("Fatal Error: Connection Failed!");
         } else { //jeśli poprawnie wpiszemy nasz kod weryfikacyjny który przyjdzie do nas w mailu następuje modyfikacja pola isVerficate na true
@@ -35,7 +35,8 @@ if (isset($_POST['email'])) {
                 }
             }
         }
-
+        $connect = null;
+        $updateEmailVerificationResult = null;
     } catch (PDOException $exception) {
         echo $exception->getMessage();
         echo '<span style="color:red;">Server error. Sorry for that try later!</span>';

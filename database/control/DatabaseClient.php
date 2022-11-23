@@ -20,3 +20,6 @@ class DatabaseClient {
         $conn -> close();
     }
 }
+function createPDO() {
+    return new PDO('mysql:host=localhost; dbname=schule_quizule', "root", "");
+}

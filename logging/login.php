@@ -12,11 +12,11 @@ if (isset($_POST['login'])) {
     $login = $_POST['login'];
     $password = $_POST['log_password'];
 //    $isVerificate=$_GET['log_verificate'];
-    require_once "connect.php";
+    require_once "../database/control/DatabaseClient.php";
     mysqli_report(MYSQLI_REPORT_STRICT);
 
     try {
-        $connect = new PDO('mysql:host=localhost; dbname=schule_quizule', "root", "");
+        $connect = createPDO();
         if (!$connect) {
             die("Fatal Error: Connection Failed!");
         } else { //znalezienie w bazie pasującego do wpisanego e-maila i porównanie z przypisanym do tego maila hasła i id użytkownika jeśli się zgadzają wpuszcza do systemu jeśli nie stosowany komunikat
@@ -56,7 +56,8 @@ if (isset($_POST['login'])) {
                 }
             }
         }
-
+        $connect = null;
+        $findEqualMailResult = null;
     } catch (PDOException $exception) {
         echo $exception->getMessage();
         echo '<span style="color:red;">Server error. Sorry for that try later!</span>';
