@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 require_once("./quiz/entity/Quiz.php");
 require_once("./quiz/entity/Answer.php");
@@ -28,19 +29,28 @@ $quizClient = new QuizClient();
 <div class="top">
     
   <div class="top-left">
-    <a href="Quizule.html"> 
+    <a href="#">
     <img src="LOGO.png" width = "20%" height = "20%"></a> 
-        <a href="#">Temp</a>
-        <a href="#">Temp</a>
-        <a href="#">Temp</a>    
+        <a href="logging/logout.php"><?php if (isset($_SESSION['logged']))
+            {
+                echo "Wyloguj";
+            }
+            ?></a>
+        <a href="#"><?php if (isset($_SESSION['logged']))
+            {
+                echo "<p>Welcome ".$_SESSION['email'].'!';
+            }
+
+            ?></a>
+        <a href="#"> Temp</a>
   </div>
 
   <nav class="top-right">
     <div class="dropdown">
         <a href="#">Logowanie</a>
         <ul>
-            <li><a href="#">Zaloguj</a></li>
-            <li><a href="#">Zarejestruj</a></li>
+            <li><a href="logging/login.php">Zaloguj</a></li>
+            <li><a href="logging/register.php">Zarejestruj</a></li>
         </ul>
     </div>
   </nav>
