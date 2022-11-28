@@ -1,0 +1,16 @@
+.user_data {
+    width: 250px;
+    display: inline-block;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    text-decoration: none;
+}
+
+.user_single_data {
+    background-color: #eee;
+    color: black;
+    display: block;
+    padding: 12px;
+    text-decoration: none;
+}

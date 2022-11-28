@@ -19,7 +19,9 @@ class DatabaseClient {
     static function closeConnection($conn) {
         $conn -> close();
     }
-}
-function createPDO() {
-    return new PDO('mysql:host=localhost; dbname=schule_quizule', "root", "");
+
+    static function createPDO() {
+        return new PDO('mysql:host=localhost;dbname=schule_quizule', "root", "");
+    }
+
 }

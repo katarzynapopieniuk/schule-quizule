@@ -21,8 +21,6 @@ body {
     text-decoration: none;
 }
 
-
-
 .top-right {
     width: 100%;
     position: fixed;
@@ -122,3 +120,17 @@ body {
     color: white;
     text-align: center;
  }
+
+.option {
+    width: 10%;
+    margin-left:  5%;
+    display: block;
+    background-color: #eee;
+    color: black;
+    padding: 10px;
+}
+
+.option:hover {
+    background-color: #04aa046D;
+    transition: background-color .5s;
+}

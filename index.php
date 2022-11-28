@@ -11,8 +11,13 @@ require_once("./quiz/display/QuizDisplay.php");
 require_once("./quiz/control/QuizClient.php");
 require_once("./quiz/control/QuizResultCalculator.php");
 require_once("./database/control/DatabaseClient.php");
+require_once("./user/control/UserClient.php");
+require_once("./user/display/UserDataDisplay.php");
+require_once("./user/entity/AccountType.php");
+require_once("./user/entity/User.php");
 
 $quizClient = new QuizClient();
+$userClient = new UserClient();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -21,6 +26,7 @@ $quizClient = new QuizClient();
     <meta charset="UTF-8">
     <meta name=""viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="user/display/userData.css">
     <script src="./utilities.js" type="text/javascript"></script>
 </head>
 <body>
@@ -31,18 +37,23 @@ $quizClient = new QuizClient();
   <div class="top-left">
     <a href="#">
     <img src="LOGO.png" width = "20%" height = "20%"></a> 
-        <a href="logging/logout.php"><?php if (isset($_SESSION['logged']))
-            {
+        <a href="logging/logout.php"><?php if (isset($_SESSION['logged'])) {
                 echo "Wyloguj";
             }
             ?></a>
-        <a href="#"><?php if (isset($_SESSION['logged']))
-            {
+        <a href="#"><?php if (isset($_SESSION['logged'])) {
                 echo "<p>Welcome ".$_SESSION['email'].'!';
             }
 
             ?></a>
         <a href="#"> Temp</a>
+  </div>
+
+  <div class="top-mid">
+      <?php if (isset($_SESSION['logged']) && isset($_SESSION['Id'])) {
+          echo '<div class="option" onclick="setSeeCurrentUserDataOptionPOST()">  Moje dane</div>';
+      }
+      ?>
   </div>
 
   <nav class="top-right">
@@ -82,6 +93,8 @@ $quizClient = new QuizClient();
             }
         } else if(isset($_POST['submittedQuizId'])) {
             echo QuizResultCalculator::calculateQuizResult($_POST, $quizClient);
+        } else if(isset($_POST['see_current_user_data']) && isset($_SESSION['logged']) && isset($_SESSION['Id'])) {
+            echo UserDataDisplay::displayDataForUserWithId($_SESSION['Id'], $userClient);
         }
     ?>
 
