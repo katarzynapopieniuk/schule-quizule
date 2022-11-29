@@ -10,6 +10,12 @@ function setCurrentQuizPOST(quizId) {
     post(path, params);
 }
 
+function setSeeCurrentUserDataOptionPOST() {
+    const path = '/schule-quizule/';
+    const params = {'see_current_user_data': ''};
+    post(path, params);
+}
+
 function post(path, params) {
 
     const form = document.createElement('form');

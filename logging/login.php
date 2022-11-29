@@ -16,7 +16,7 @@ if (isset($_POST['login'])) {
     mysqli_report(MYSQLI_REPORT_STRICT);
 
     try {
-        $connect = createPDO();
+        $connect = DatabaseClient::createPDO();
         if (!$connect) {
             die("Fatal Error: Connection Failed!");
         } else { //znalezienie w bazie pasującego do wpisanego e-maila i porównanie z przypisanym do tego maila hasła i id użytkownika jeśli się zgadzają wpuszcza do systemu jeśli nie stosowany komunikat
@@ -32,7 +32,7 @@ if (isset($_POST['login'])) {
                     if (password_verify($password, $fetch['password'])) { //odhashowywanie hasła i sprawdzenie czy zgadza się z hasłem zhashownym
 //                    if($fetch->isVerificate == "true") {
                         $_SESSION['logged'] = true;
-                        $_SESSION['Id'] = $fetch['Id'];
+                        $_SESSION['Id'] = $fetch['id'];
                         $_SESSION['email'] = $fetch['email'];
                         unset($_SESSION['error']);
                         $findEqualMailResult->closeCursor();

@@ -101,7 +101,7 @@ if (isset($_POST['reg_email'])) {
             $mail->send();
 
             //przypisanie połączenia do zmiennej
-            $connect = createPDO();
+            $connect = DatabaseClient::createPDO();
             if (!$connect) {
                 die("Fatal Error: Connection Failed!");
             } else { // sprawdzenie czy w bazie istnieje użytkownik o podanym e-mailu

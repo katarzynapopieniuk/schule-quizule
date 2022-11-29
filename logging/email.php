@@ -10,13 +10,13 @@ if ((isset($_SESSION['logged'])) && ($_SESSION['logged'] == true)) {
 if (isset($_POST['email'])) {
     $email = $_POST['email'];
     $verificationCode = $_POST['verification_code'];
-    $isValidationOk = true; //Zmienna innformująca o udanej walidacji
+    $isValidationOk = true;
 
     require_once "../database/control/DatabaseClient.php";
     mysqli_report(MYSQLI_REPORT_STRICT);
 
     try {
-        $connect = createPDO();
+        $connect = DatabaseClient::createPDO();
         if (!$connect) {
             die("Fatal Error: Connection Failed!");
         } else { //jeśli poprawnie wpiszemy nasz kod weryfikacyjny który przyjdzie do nas w mailu następuje modyfikacja pola isVerficate na true
