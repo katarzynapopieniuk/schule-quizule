@@ -1,4 +1,10 @@
 <?php
+
+use room\control\RoomClient;
+use room\control\RoomCreator;
+use room\control\RoomDisplay;
+use room\display\RoomListDisplay;
+
 session_start();
 
 require_once("./quiz/entity/Quiz.php");
@@ -15,9 +21,18 @@ require_once("./user/control/UserClient.php");
 require_once("./user/display/UserDataDisplay.php");
 require_once("./user/entity/AccountType.php");
 require_once("./user/entity/User.php");
+require_once("./room/control/RoomClient.php");
+require_once("./room/control/RoomCreator.php");
+require_once("./room/display/RoomCreatorDisplay.php");
+require_once("./room/display/RoomDisplay.php");
+require_once("./room/display/RoomListDisplay.php");
+require_once("./room/entity/Room.php");
+require_once("./room/entity/RoomCreatingException.php");
+require_once("./room/entity/RoomWithNameAlreadyExistsException.php");
 
 $quizClient = new QuizClient();
 $userClient = new UserClient();
+$roomClient = new RoomClient();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -50,9 +65,17 @@ $userClient = new UserClient();
   </div>
 
   <div class="top-mid">
-      <?php if (isset($_SESSION['logged']) && isset($_SESSION['Id'])) {
+      <?php
+      if (isset($_SESSION['logged']) && isset($_SESSION['Id'])) {
           echo '<div class="option" onclick="setSeeCurrentUserDataOptionPOST()">  Moje dane</div>';
       }
+      if (isset($_SESSION['logged']) && isset($_SESSION['Id']) && isset($_SESSION['accountType'])) {
+          $accountType = $_SESSION['accountType'];
+          if(AccountType::isTeacher($accountType)) {
+              echo '<div class="option" onclick="setSeeCurrentUseRoomsOptionPOST()">  Moje pokoje</div>';
+          }
+      }
+
       ?>
   </div>
 
@@ -94,7 +117,18 @@ $userClient = new UserClient();
         } else if(isset($_POST['submittedQuizId'])) {
             echo QuizResultCalculator::calculateQuizResult($_POST, $quizClient);
         } else if(isset($_POST['see_current_user_data']) && isset($_SESSION['logged']) && isset($_SESSION['Id'])) {
-            echo UserDataDisplay::displayDataForUserWithId($_SESSION['Id'], $userClient);
+            UserDataDisplay::displayDataForUserWithId($_SESSION['Id'], $userClient);
+        } else if(isset($_POST['see_current_user_rooms']) && isset($_SESSION['logged']) && isset($_SESSION['Id']) && isset($_SESSION['accountType'])) {
+            $accountType = $_SESSION['accountType'];
+            if(AccountType::isTeacher($accountType)) {
+                $rooms = $roomClient->getRoomsForTeacherId($_SESSION['Id']);
+                RoomListDisplay::displayRoomList($rooms);
+                RoomCreatorDisplay::displayCreator();
+            }
+        } else if(isset($_POST['createRoom']) && isset($_SESSION['logged']) && isset($_SESSION['Id']) && isset($_POST['roomName'])) {
+            RoomCreator::createRoom($_POST['roomName'], $_SESSION['Id'], $roomClient);
+        } else if(isset($_POST['see_current_room']) && isset($_SESSION['logged']) && isset($_SESSION['Id'])) {
+            RoomDisplay::displayRoomWithId($_POST['see_current_room'], $roomClient, $userClient);
         }
     ?>
 

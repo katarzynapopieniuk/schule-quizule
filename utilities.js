@@ -16,6 +16,18 @@ function setSeeCurrentUserDataOptionPOST() {
     post(path, params);
 }
 
+function setSeeCurrentUseRoomsOptionPOST() {
+    const path = '/schule-quizule/';
+    const params = {'see_current_user_rooms': ''};
+    post(path, params);
+}
+
+function setCurrentRoomPOST(roomId) {
+    const path = '/schule-quizule/';
+    const params = {'see_current_room': roomId};
+    post(path, params);
+}
+
 function post(path, params) {
 
     const form = document.createElement('form');
