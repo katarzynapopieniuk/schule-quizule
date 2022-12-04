@@ -28,6 +28,12 @@ function setCurrentRoomPOST(roomId) {
     post(path, params);
 }
 
+function setAddUserToRoomPOST(roomId) {
+    const path = '/schule-quizule/';
+    const params = {'add_user_to_room': roomId};
+    post(path, params);
+}
+
 function post(path, params) {
 
     const form = document.createElement('form');

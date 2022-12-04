@@ -3,6 +3,7 @@
 namespace room\control;
 
 use DatabaseClient;
+use room\entity\AddingUserToRoomException;
 use room\entity\MissingRoomException;
 use room\entity\Room;
 use room\entity\RoomCreatingException;
@@ -65,6 +66,27 @@ class RoomClient {
 
         DatabaseClient::closeConnection($databaseConnection);
         throw new MissingRoomException();
+    }
+
+    public function addUserToRoom($userId, $roomId) {
+        $databaseConnection = DatabaseClient::openConnection();
+        $createAddUserToRoomQuery = "INSERT INTO room_user (roomId, userId) VALUES ('$roomId', '$userId')";
+        $result = mysqli_query($databaseConnection, $createAddUserToRoomQuery);
+
+        if (!$result) {
+            DatabaseClient::closeConnection($databaseConnection);
+            throw new AddingUserToRoomException("Cannot add user to room, probably cause: user already in room");
+        }
+        DatabaseClient::closeConnection($databaseConnection);
+    }
+
+    public function isUserInRoom($userId, $roomId): bool {
+        $databaseConnection = DatabaseClient::openConnection();
+        $userIsAlreadyInRoomQuery = "SELECT count(*) as total from room_user where roomId='$roomId' and userId='$userId'";
+        $result = mysqli_query($databaseConnection, $userIsAlreadyInRoomQuery);
+        $data = $result->fetch_assoc();
+        DatabaseClient::closeConnection($databaseConnection);
+        return $data['total'] > 0;
     }
 
     /**
