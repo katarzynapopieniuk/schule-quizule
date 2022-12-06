@@ -2,17 +2,23 @@
 
 class UserDataDisplay {
 
-    public static function displayDataForUserWithId($userId, $userClient) {
+    public static function displayDataForUserWithId($userId, UserClient $userClient) {
         $user = self::getUserWithId($userId, $userClient);
         self::displayUserData($user);
     }
 
+    public static function displayUserSimpleData(User $user) {
+        echo "<div class='user_data'>";
+        echo $user->getName() . " " .  $user->getSurname() . "</br>";
+        echo "</div>";
+    }
+
     /**
      * @param $userId
-     * @param $userClient
+     * @param UserClient $userClient
      * @return User
      */
-    private static function getUserWithId($userId, $userClient) {
+    private static function getUserWithId($userId, UserClient $userClient) {
         $user = new User($userId);
         $userClient->setUserData($user);
         return $user;

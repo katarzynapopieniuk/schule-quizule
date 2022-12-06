@@ -34,6 +34,7 @@ if (isset($_POST['login'])) {
                         $_SESSION['logged'] = true;
                         $_SESSION['Id'] = $fetch['id'];
                         $_SESSION['email'] = $fetch['email'];
+                        $_SESSION['accountType'] = $fetch['accountType'];
                         unset($_SESSION['error']);
                         $findEqualMailResult->closeCursor();
                         header('Location: ../index.php'); //koniec logowania przenosi do strony głównej
