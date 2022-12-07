@@ -9,8 +9,18 @@ class UserDataDisplay {
 
     public static function displayUserSimpleData(User $user) {
         echo "<div class='user_data'>";
-        echo $user->getName() . " " .  $user->getSurname() . "</br>";
+        echo $user->getName() . " " .  $user->getSurname();
         echo "</div>";
+    }
+
+    public static function displayRemoveUserButton($userId, $roomId) {
+        ?>
+        <form action="/schule-quizule/" method="post">
+            <input type="hidden" name="roomId" id="roomId" value="<?php print "$roomId" ?>"/>
+            <input type="hidden" name="userId" id="roomId" value="<?php print "$userId" ?>"/>
+            <input type="submit" name="removeUserFromRoom" value="usuń">
+        </form>
+        <?php
     }
 
     /**

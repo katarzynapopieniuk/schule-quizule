@@ -137,6 +137,9 @@ $roomClient = new RoomClient();
             RoomDisplay::displayAddingUserToRoomForm($_POST['add_user_to_room']);
         } else if(isset($_POST['add_user_with_email_to_room']) && isset($_SESSION['logged']) && isset($_SESSION['Id'])) {
             RoomManager::addUserToRoom($_POST['addedUserEmail'], $_POST['roomId'], $roomClient, $userClient);
+        } else if(isset($_POST['removeUserFromRoom']) && isset($_POST['roomId']) && isset($_POST['userId'])) {
+            RoomManager::removeUserFromRoom($_POST['userId'], $_POST['roomId'], $roomClient);
+            RoomDisplay::displayRoomWithId($_POST['roomId'], $roomClient, $userClient);
         }
     ?>
 

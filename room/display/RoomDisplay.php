@@ -20,6 +20,7 @@ class RoomDisplay {
         echo "</br>";
         foreach ($users as $user) {
             UserDataDisplay::displayUserSimpleData($user);
+            UserDataDisplay::displayRemoveUserButton($user->getId(), $room->getId());
         }
         ?>
 
@@ -40,10 +41,10 @@ class RoomDisplay {
     public static function displayAddingUserToRoomForm($roomId) {
         ?>
         <form action="/schule-quizule/" method="post">
-            <input type="text" class="form-control" id="addedUserEmail" placeholder="email" name="addedUserEmail" required>
+            <input type="text" class="form-control" id="addedUserEmail" placeholder="email" name="addedUserEmail" required/>
             <input type="hidden" name="add_user_with_email_to_room" id="add_user_with_email_to_room" value=""/>
             <input type="hidden" name="roomId" id="roomId" value="<?php print "$roomId" ?>"/>
-            <input type="submit" name="sendAnswers" value="dodaj ucznia">
+            <input type="submit" name="sendAnswers" value="dodaj ucznia"/>
         </form>
 
         <?php

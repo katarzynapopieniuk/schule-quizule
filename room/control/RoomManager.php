@@ -20,6 +20,10 @@ class RoomManager {
         }
     }
 
+    public static function removeUserFromRoom($userId, $roomId, RoomClient $roomClient) {
+        $roomClient->removeUserFromRoom($userId, $roomId);
+    }
+
     private static function addUserToRoomIfPossible($userEmail, $roomId, RoomClient $roomClient, UserClient $userClient) {
         self::validateIfCurrentUserHasProperAccountType();
         self::validateIfCurrentUserIsRoomOwner($roomClient, $roomId);

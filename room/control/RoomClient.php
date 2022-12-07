@@ -89,6 +89,13 @@ class RoomClient {
         return $data['total'] > 0;
     }
 
+    public function removeUserFromRoom($userId, $roomId) {
+        $databaseConnection = DatabaseClient::openConnection();
+        $userIsAlreadyInRoomQuery = "DELETE FROM room_user WHERE roomId='$roomId' and userId='$userId'";
+        mysqli_query($databaseConnection, $userIsAlreadyInRoomQuery);
+        DatabaseClient::closeConnection($databaseConnection);
+    }
+
     /**
      * @param $roomId
      * @return array
