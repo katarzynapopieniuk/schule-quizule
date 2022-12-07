@@ -2,7 +2,7 @@
 
 class UserClient {
 
-    function setUserData($user) {
+    public function setUserData(User $user): User {
         $userId = $user->getId();
         $getUserWithIdQuery = "SELECT * from user where id = $userId";
         $databaseConnection = DatabaseClient::openConnection();
@@ -21,5 +21,22 @@ class UserClient {
 
         DatabaseClient::closeConnection($databaseConnection);
         return $user;
+    }
+
+    public function getUserIdForEmail($email) {
+        $getUserIdWithEmailQuery = "SELECT id from user where email = '$email'";
+        $databaseConnection = DatabaseClient::openConnection();
+
+        $result = mysqli_query($databaseConnection, $getUserIdWithEmailQuery);
+
+        if (mysqli_num_rows($result) > 0) {
+            $row = mysqli_fetch_assoc($result);
+            $id = $row["id"];
+            DatabaseClient::closeConnection($databaseConnection);
+            return $id;
+        }
+
+        DatabaseClient::closeConnection($databaseConnection);
+        throw new MissingUserException();
     }
 }

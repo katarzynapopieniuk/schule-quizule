@@ -3,6 +3,7 @@
 use room\control\RoomClient;
 use room\control\RoomCreator;
 use room\control\RoomDisplay;
+use room\control\RoomManager;
 use room\display\RoomListDisplay;
 
 session_start();
@@ -20,12 +21,15 @@ require_once("./database/control/DatabaseClient.php");
 require_once("./user/control/UserClient.php");
 require_once("./user/display/UserDataDisplay.php");
 require_once("./user/entity/AccountType.php");
+require_once("./user/entity/MissingUserException.php");
 require_once("./user/entity/User.php");
 require_once("./room/control/RoomClient.php");
 require_once("./room/control/RoomCreator.php");
+require_once("./room/control/RoomManager.php");
 require_once("./room/display/RoomCreatorDisplay.php");
 require_once("./room/display/RoomDisplay.php");
 require_once("./room/display/RoomListDisplay.php");
+require_once("./room/entity/AddingUserToRoomException.php");
 require_once("./room/entity/Room.php");
 require_once("./room/entity/RoomCreatingException.php");
 require_once("./room/entity/RoomWithNameAlreadyExistsException.php");
@@ -129,6 +133,13 @@ $roomClient = new RoomClient();
             RoomCreator::createRoom($_POST['roomName'], $_SESSION['Id'], $roomClient);
         } else if(isset($_POST['see_current_room']) && isset($_SESSION['logged']) && isset($_SESSION['Id'])) {
             RoomDisplay::displayRoomWithId($_POST['see_current_room'], $roomClient, $userClient);
+        } else if(isset($_POST['add_user_to_room']) && isset($_SESSION['logged']) && isset($_SESSION['Id'])) {
+            RoomDisplay::displayAddingUserToRoomForm($_POST['add_user_to_room']);
+        } else if(isset($_POST['add_user_with_email_to_room']) && isset($_SESSION['logged']) && isset($_SESSION['Id'])) {
+            RoomManager::addUserToRoom($_POST['addedUserEmail'], $_POST['roomId'], $roomClient, $userClient);
+        } else if(isset($_POST['removeUserFromRoom']) && isset($_POST['roomId']) && isset($_POST['userId'])) {
+            RoomManager::removeUserFromRoom($_POST['userId'], $_POST['roomId'], $roomClient);
+            RoomDisplay::displayRoomWithId($_POST['roomId'], $roomClient, $userClient);
         }
     ?>
 
