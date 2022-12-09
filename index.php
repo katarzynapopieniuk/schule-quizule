@@ -34,6 +34,16 @@ require_once("./room/entity/Room.php");
 require_once("./room/entity/RoomCreatingException.php");
 require_once("./room/entity/RoomWithNameAlreadyExistsException.php");
 
+//Status przekroczonego czasu sesji jeśli widnieje przenosi od razu do pliku docelowego
+if ((isset($_SESSION['time_out'])) && ($_SESSION['time_out'] == true)) {
+    header('Location: time_out.php');
+    exit();
+}
+//Status przeładowania próbami zalogowania jeśli widnieje w sesji przenosi odrazu do pliku docelowego
+if ((isset($_SESSION['overload'])) && ($_SESSION['overload'] == true)) {
+    header('Location: attemps_overload.php');
+    exit();
+}
 $quizClient = new QuizClient();
 $userClient = new UserClient();
 $roomClient = new RoomClient();

@@ -1,4 +1,5 @@
 <?php
+$_SESSION['attemps']= 0;
 
 session_start();
 //Status zalogowany jeśli widnieje w sesji przenosi odrazu do pliku docelowego
@@ -6,6 +7,17 @@ if ((isset($_SESSION['logged'])) && ($_SESSION['logged'] == true)) {
     header('Location: ../index.php');
     exit();
 }
+//Status przekroczonego czasu sesji jeśli widnieje przenosi od razu do pliku docelowego
+if ((isset($_SESSION['time_out'])) && ($_SESSION['time_out'] == true)) {
+    header('Location: time_out.php');
+    exit();
+}
+//Status przeładowania próbami zalogowania jeśli widnieje w sesji przenosi odrazu do pliku docelowego
+if ((isset($_SESSION['overload'])) && ($_SESSION['overload'] == true)) {
+    header('Location: attemps_overload.php');
+    exit();
+}
+
 if (isset($_POST['login'])) {
 //Zmienna innformująca o udanej walidacji
     $isValidationOK = true;
@@ -29,30 +41,40 @@ if (isset($_POST['login'])) {
                 $how_many_mails = $findEqualMailResult->rowCount();
                 $fetch = $findEqualMailResult->fetch();
                 if ($how_many_mails > 0) {
-                    if (password_verify($password, $fetch['password'])) { //odhashowywanie hasła i sprawdzenie czy zgadza się z hasłem zhashownym
-//                    if($fetch->isVerificate == "true") {
-                        $_SESSION['logged'] = true;
-                        $_SESSION['Id'] = $fetch['id'];
-                        $_SESSION['email'] = $fetch['email'];
-                        $_SESSION['accountType'] = $fetch['accountType'];
-                        unset($_SESSION['error']);
-                        $findEqualMailResult->closeCursor();
-                        header('Location: ../index.php'); //koniec logowania przenosi do strony głównej
-
-//else {
-//                        $is_OK=false;
-//                        $_SESSION['error'] = '<span style="color:red">Your email is not verified</span>';
-//                        header('Location: login.php');
-//                    }
-                    } else {
+                    if($fetch['isVerificate']) {
+                        if (password_verify($password, $fetch['password'])) { //odhashowywanie hasła i sprawdzenie czy zgadza się z hasłem zhashownym
+                            $_SESSION['logged'] = true;
+                            $_SESSION['Id'] = $fetch['id'];
+                            $_SESSION['email'] = $fetch['email'];
+                            $_SESSION['accountType'] = $fetch['accountType'];
+                            unset($_SESSION['error']);
+                            $findEqualMailResult->closeCursor();
+                            header('Location: ../index.php'); //koniec logowania przenosi do strony głównej
+                        } else {
+                            $_SESSION['attemps'] += 1;
+                            $isValidationOK = false;
+                            $_SESSION['error'] = '<span style="color:red">Your login or password is incorrect. Your try: </span>' . $_SESSION['attemps'] . '<br> <span style="color:red"> After 3 tries you will have to wait minute</span>'; //jeśli hasło nie zgadza się
+                            header('Location: login.php');
+                            if ($_SESSION['attemps'] >= 3) {
+                                $_SESSION['overload'] = true;
+                                header("Location:attemps_overload.php");
+                            }
+                        }
+                    }else{
+                        $_SESSION['attemps'] += 1;
                         $isValidationOK = false;
-                        $_SESSION['error'] = '<span style="color:red">Your login or password is incorrect</span>'; //jeśli hasło nie zgadza się
+                        $_SESSION['error'] = '<span style="color:red">Your email is not verified. <a href="email.php">Go verify it </a> Your try: </span>' . $_SESSION['attemps'] . '<br> <span style="color:red"> After 3 tries you will have to wait minute</span>'; //jeśli hasło nie zgadza się
                         header('Location: login.php');
+                        if ($_SESSION['attemps'] >= 3) {
+                            $_SESSION['overload'] = true;
+                            header("Location:attemps_overload.php");
+                        }
                     }
 
-                } else {
+                } else
+                {$_SESSION['attemps'] += 1;
                     $isValidationOK = false;
-                    $_SESSION['error'] = '<span style="color:red">Your login or password is incorrect</span>'; //jeśli e-mail się nie zgadza
+                    $_SESSION['error'] = '<span style="color:red">Your login or password is incorrect. Your try: </span>' . $_SESSION['attemps'] . '<br> <span style="color:red"> After 3 tries you will have to wait minute</span>'; //jeśli hasło nie zgadza się
                     header('Location: login.php');
                 }
             }
@@ -95,9 +117,11 @@ if (isset($_POST['login'])) {
                                name="log_password">
                     </div>
                     <div class="d-flex flex-row align-items-center justify-content-between">
-                        <a href="register.php">Create Account</a>
+                        <a href="forgot_password.php">Forget password?</a>
                         <button class="btn btn-primary">Login</button>
                     </div>
+                    <br>
+                    <p>Not a member yet? <a href="register.php"> Sign up now!</a></p>
                 </form>
                 <?php
                 if (isset($_SESSION['error'])) echo $_SESSION['error'];
