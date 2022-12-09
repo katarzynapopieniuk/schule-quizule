@@ -15,6 +15,16 @@ if ((isset($_SESSION['logged'])) && ($_SESSION['logged'] == true)) {
     header('Location: ../index.php');
     exit();
 }
+//Status przekroczonego czasu sesji jeśli widnieje przenosi od razu do pliku docelowego
+if ((isset($_SESSION['time_out'])) && ($_SESSION['time_out'] == true)) {
+    header('Location: time_out.php');
+    exit();
+}
+//Status przeładowania próbami zalogowania jeśli widnieje w sesji przenosi odrazu do pliku docelowego
+if ((isset($_SESSION['overload'])) && ($_SESSION['overload'] == true)) {
+    header('Location: attemps_overload.php');
+    exit();
+}
 
 //Warunki udanej rejestracji
 if (isset($_POST['reg_email'])) {
@@ -29,11 +39,15 @@ if (isset($_POST['reg_email'])) {
     }
 
     $password = $_POST['reg_password'];
+    $uppercase = preg_match('@[A-Z]@', $password);
+    $lowercase = preg_match('@[a-z]@', $password);
+    $number = preg_match('@[0-9]@', $password);
+    $specialChars = preg_match('@[^\w]@', $password);
     $repeat_password = $_POST['reg_repeat'];
 
-    if ((strlen($password) < 8) || (strlen($password) > 45)) {
+    if ((strlen($password) < 8) || (strlen($password) > 45) || !$uppercase || !$lowercase || !$number || !$specialChars) {
         $isValidationOK = false;
-        $_SESSION['e_password'] = "Password has to have between 8 and 45 chars!";
+        $_SESSION['e_password'] = "Password has to be between 8 and 45 chars, has to have 1 number, 1 upper and lower case letter and 1 special char!";
     }
 
     if ($password != $repeat_password) {
@@ -56,18 +70,6 @@ if (isset($_POST['reg_email'])) {
         $isValidationOK = false;
         $_SESSION['e_accountKey'] = "Insert your Teacher Secret Key";
     }
-
-    //recaptcha
-//    $secret ="6Lf6HHMgAAAAAAwZVMI5CgLMCALN7ZWh4ra3ad_V";
-//
-//    $check=file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret.'&response='.$_POST['g-recaptcha-response']);
-//
-//    $answer=json_decode($check);
-
-//        if($answer->success == false){
-//           $is_OK = false;
-//          $_SESSION['e_bot'] = "You have to verify that you aren't bot!";
-//       }
 
     $name = $_POST['reg_name'];
     $surname = $_POST['reg_surname'];
@@ -210,8 +212,7 @@ if (isset($_POST['reg_email'])) {
 
                         <div class="form-group">
                             <input type="password" class="form-control" id="password" placeholder="Password"
-                                   name="reg_password">
-                        </div>
+                                   name="reg_password" > <img title="Min. 1 mała i 1 duża litera, 1 cyfra i 1 znak specjalny i w sumie 8 znaków"src="question.png" width="20px" height="20px" >
                         <?php
                         if (isset($_SESSION['e_password'])) {
                             echo '<div class="error">' . $_SESSION['e_password'] . '</div>';
