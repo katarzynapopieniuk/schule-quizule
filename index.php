@@ -53,7 +53,7 @@ $roomClient = new RoomClient();
 <head>
     <title>Schule Quizule</title>
     <meta charset="UTF-8">
-    <meta name=""viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="user/display/userData.css">
     <script src="./utilities.js" type="text/javascript"></script>
@@ -61,58 +61,58 @@ $roomClient = new RoomClient();
 <body>
 
 <!-- Navbar -->
-<div class="top">
     
-  <div class="top-left">
+<div class="col-1">
     <a href="#">
-    <img src="LOGO.png" width = "20%" height = "20%"></a> 
-        <a href="logging/logout.php"><?php if (isset($_SESSION['logged'])) {
-                echo "Wyloguj";
-            }
-            ?></a>
-        <a href="#"><?php if (isset($_SESSION['logged'])) {
-                echo "<p>Welcome ".$_SESSION['email'].'!';
-            }
+    <img src="LOGO.png" alt="logo" </a>
 
-            ?></a>
-        <a href="#"> Temp</a>
-  </div>
-
-  <div class="top-mid">
-      <?php
-      if (isset($_SESSION['logged']) && isset($_SESSION['Id'])) {
-          echo '<div class="option" onclick="setSeeCurrentUserDataOptionPOST()">  Moje dane</div>';
-      }
-      if (isset($_SESSION['logged']) && isset($_SESSION['Id']) && isset($_SESSION['accountType'])) {
-          $accountType = $_SESSION['accountType'];
-          if(AccountType::isTeacher($accountType)) {
-              echo '<div class="option" onclick="setSeeCurrentUseRoomsOptionPOST()">  Moje pokoje</div>';
-          }
-      }
-
-      ?>
-  </div>
-
-  <nav class="top-right">
-    <div class="dropdown">
-        <a href="#">Logowanie</a>
-        <ul>
-            <li><a href="logging/login.php">Zaloguj</a></li>
-            <li><a href="logging/register.php">Zarejestruj</a></li>
-        </ul>
-    </div>
-  </nav>
-</div>
-
-<!-- Sidebar -->
-<div class="left-column">
+    <!-- Sidebar -->
     <nav class="topics-menu">
         <?php CategoryDisplay::display(Category::getCategories()); ?>
     </nav>
+
 </div>
 
-<div class="main" style="margin-left:250px">
-    <?php
+<div class="col-2">
+    <header>
+        <div class="top-left">
+            <a href="logging/logout.php"><?php if (isset($_SESSION['logged'])) {
+              echo "Wyloguj";
+            }
+            ?></a>
+            <a href="#"><?php if (isset($_SESSION['logged'])) {
+              echo "<p>Welcome ".$_SESSION['email'].'!';
+            }
+
+            ?></a>
+            <a href="#"> Temp</a>
+
+              <?php
+              if (isset($_SESSION['logged']) && isset($_SESSION['Id'])) {
+                  echo '<div class="option" onclick="setSeeCurrentUserDataOptionPOST()">  Moje dane</div>';
+              }
+              if (isset($_SESSION['logged']) && isset($_SESSION['Id']) && isset($_SESSION['accountType'])) {
+                  $accountType = $_SESSION['accountType'];
+                  if(AccountType::isTeacher($accountType)) {
+                      echo '<div class="option" onclick="setSeeCurrentUseRoomsOptionPOST()">  Moje pokoje</div>';
+                  }
+              }
+
+              ?>
+
+            <nav class="dropdown">
+                <a href="#">Logowanie</a>
+                <ul>
+                    <li><a href="logging/login.php">Zaloguj</a></li>
+                    <li><a href="logging/register.php">Zarejestruj</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="content" style="margin-left:250px">
+        <article>Article</article>
+        <?php
         if(isset($_POST['current_category'])) {
             $category = $_POST['current_category'];
             echo "Wybrano karegorie: " . $category . "</br>";
@@ -151,10 +151,18 @@ $roomClient = new RoomClient();
             RoomManager::removeUserFromRoom($_POST['userId'], $_POST['roomId'], $roomClient);
             RoomDisplay::displayRoomWithId($_POST['roomId'], $roomClient, $userClient);
         }
-    ?>
+        ?>
+    </main>
+    <footer>
+        <h4>Footer</h4>
+    </footer>
+
 
 </div>
 
-    <div class="footer">
-      <h4>Footer</h4>
-    </div>
+
+
+
+
+
+
