@@ -18,6 +18,7 @@ class RoomManager {
         } catch (MissingUserException $e) {
             echo "Nie można dodać użytkownika do pokoju, ponieważ użytkownik o podanym adresie email nie istnieje";
         }
+        self::displayReturnToRoomButton($roomId);
     }
 
     public static function removeUserFromRoom($userId, $roomId, RoomClient $roomClient) {
@@ -68,5 +69,9 @@ class RoomManager {
         if($roomClient->isUserInRoom($userId, $roomId)) {
             throw new AddingUserToRoomException("uczeń już jest w pokoju");
         }
+    }
+
+    private static function displayReturnToRoomButton($roomId) {
+        RoomDisplay::displaySetRoomButton($roomId, "Powrót");
     }
 }

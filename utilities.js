@@ -22,12 +22,6 @@ function setSeeCurrentUseRoomsOptionPOST() {
     post(path, params);
 }
 
-function setCurrentRoomPOST(roomId) {
-    const path = '/schule-quizule/';
-    const params = {'see_current_room': roomId};
-    post(path, params);
-}
-
 function setAddUserToRoomPOST(roomId) {
     const path = '/schule-quizule/';
     const params = {'add_user_to_room': roomId};
