@@ -2,7 +2,7 @@
 
 class QuizClient {
 
-    function getQuizzesByCategory($category) {
+    public function getQuizzesByCategory($category) {
         $databaseConnection = DatabaseClient::openConnection();
         $query = "SELECT * from quiz where category = '$category'";
 
@@ -24,7 +24,7 @@ class QuizClient {
         return $quizzes;
     }
 
-    function getQuizzesById($quizId) {
+    public function getQuizzesById($quizId) {
         $databaseConnection = DatabaseClient::openConnection();
         $query = "SELECT * from quiz where id = '$quizId'";
 
@@ -48,7 +48,7 @@ class QuizClient {
         return $quizzes;
     }
 
-    function getQuizQuestions($quiz, $databaseConnection) {
+    public function getQuizQuestions($quiz, $databaseConnection) {
         $id = $quiz->getId();
         $quizQuestionQuery = "SELECT * from quiz_question where quizId = '$id'";
         $result = mysqli_query($databaseConnection, $quizQuestionQuery);
@@ -66,7 +66,7 @@ class QuizClient {
         return $questions;
     }
 
-    function getQuestionAnswers($questionId, $databaseConnection) {
+    public function getQuestionAnswers($questionId, $databaseConnection) {
         $questionAnswersQuery = "SELECT * from answer where questionId = $questionId";
         $result = mysqli_query($databaseConnection, $questionAnswersQuery);
         $answers = array();
@@ -83,22 +83,78 @@ class QuizClient {
         return $answers;
     }
 
-    function isCorrectAnswer($answerId) {
+    public function getQuizzesByTeacherId($teacherId) {
         $databaseConnection = DatabaseClient::openConnection();
-        $questionAnswersQuery = "SELECT isCorrect from answer where id = $answerId";
-        $result = mysqli_query($databaseConnection, $questionAnswersQuery);
+        $query = "SELECT * from quiz where owner_id = '$teacherId'";
+
+        $result = mysqli_query($databaseConnection, $query);
+        $quizzes = array();
 
         if (mysqli_num_rows($result) > 0) {
             while($row = mysqli_fetch_assoc($result)) {
-                return $row["isCorrect"];
+                $category = $row["category"];
+                $isPublic = $row["isPublic"];
+                $name = $row["name"];
+                $id = $row["id"];
+                $quiz = new Quiz($category, $isPublic, $name, $id, null);
+                $quizzes[] = $quiz;
             }
         }
+
+        DatabaseClient::closeConnection($databaseConnection);
+        return $quizzes;
     }
 
-    function getAllQuestionAmount($quizId) {
+    public function getQuizzesSharedWithUserWithId($userId) {
+        $getRoomWithUserIdQuery = "SELECT quizId from user_quiz where userId = $userId";
         $databaseConnection = DatabaseClient::openConnection();
-        $questionAnswersQuery = "SELECT id from quiz_question where quizId = $quizId";
-        $result = mysqli_query($databaseConnection, $questionAnswersQuery);
-        return mysqli_num_rows($result);
+
+        $result = mysqli_query($databaseConnection, $getRoomWithUserIdQuery);
+
+        $quizzesIds = array();
+
+        if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $quizId = $row["quizId"];
+                $quizzesIds[] = $quizId;
+            }
+        }
+
+        DatabaseClient::closeConnection($databaseConnection);
+
+        return $this->getQuizzesByIds($quizzesIds);
+    }
+
+    public function getQuizzesSharedWithRoomWithId($roomId) {
+        $getRoomWithUserIdQuery = "SELECT quizId from room_quiz where roomId = $roomId";
+        $databaseConnection = DatabaseClient::openConnection();
+
+        $result = mysqli_query($databaseConnection, $getRoomWithUserIdQuery);
+
+        $quizzesIds = array();
+
+        if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $quizId = $row["quizId"];
+                $quizzesIds[] = $quizId;
+            }
+        }
+
+        DatabaseClient::closeConnection($databaseConnection);
+
+        return $this->getQuizzesByIds($quizzesIds);
+    }
+
+    /**
+     * @param array $quizzesIds
+     * @return array
+     */
+    private function getQuizzesByIds(array $quizzesIds): array {
+        $quizzes = array();
+        foreach ($quizzesIds as $quizId) {
+            $quizzes[] = $this->getQuizzesById($quizId);
+        }
+
+        return $quizzes;
     }
 }

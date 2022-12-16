@@ -22,6 +22,12 @@ function setSeeCurrentUseRoomsOptionPOST() {
     post(path, params);
 }
 
+function setSeeMyQuizzesOptionPOST() {
+    const path = '/schule-quizule/';
+    const params = {'see_my_quizzes': ''};
+    post(path, params);
+}
+
 function setCurrentRoomPOST(roomId) {
     const path = '/schule-quizule/';
     const params = {'see_current_room': roomId};
