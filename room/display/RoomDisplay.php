@@ -15,23 +15,25 @@ class RoomDisplay {
         <div class="roomName" id="<?php echo $room->getName() ?>">
             <?php echo $room->getName() ?>
         </div>
+        <h>Lista uczniów</h>
         <?php
         $users = $roomClient->getUsersInRoom($roomId, $userClient);
         echo "</br>";
         foreach ($users as $user) {
             UserDataDisplay::displayUserSimpleData($user);
-            UserDataDisplay::displayRemoveUserButton($user->getId(), $room->getId());
+            if(self::isLoggedUserTeacher()) {
+                UserDataDisplay::displayRemoveUserButton($user->getId(), $room->getId());
+            }
         }
-        ?>
 
-        <div class="option" onclick="setAddUserToRoomPOST('<?php echo $roomId?>')">Dodaj ucznia</div>
-
-        <?php
+        if(self::isLoggedUserTeacher()) {
+            self::displayAddUserButton($roomId);
+        }
     }
 
     public static function displayRoomWithId($roomId, RoomClient $roomClient, UserClient $userClient) {
         try {
-            $room = $roomClient->getRoomWithId($roomId, $roomClient);
+            $room = $roomClient->getRoomWithId($roomId);
             RoomDisplay::display($room, $roomClient, $userClient);
         } catch (MissingRoomException $e) {
             echo "Pokój nie istnieje.";
@@ -47,6 +49,27 @@ class RoomDisplay {
             <input type="submit" name="sendAnswers" value="dodaj ucznia"/>
         </form>
 
+        <?php
+    }
+
+    public static function displaySetRoomButton($roomId, $buttonName) {
+        ?>
+        <form action="/schule-quizule/" method="post">
+            <div class="roomName">
+                <input type="hidden" name="see_current_room" value="<?php print "$roomId" ?>"/>
+            </div>
+            <input type="submit" name="createRoom" value="<?php echo $buttonName ?>">
+        </form>
+        <?php
+    }
+
+    private static function isLoggedUserTeacher(): bool {
+        return \AccountType::isTeacher($_SESSION['accountType']);
+    }
+
+    private static function displayAddUserButton($roomId) {
+        ?>
+        <div class="option" onclick="setAddUserToRoomPOST('<?php echo $roomId?>')">Dodaj ucznia</div>
         <?php
     }
 }

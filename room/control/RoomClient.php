@@ -49,7 +49,7 @@ class RoomClient {
         DatabaseClient::closeConnection($databaseConnection);
     }
 
-    public function getRoomWithId($roomId, RoomClient $roomClient) {
+    public function getRoomWithId($roomId) {
         $getRoomWithIdQuery = "SELECT * from room where id = $roomId";
         $databaseConnection = DatabaseClient::openConnection();
 
@@ -94,6 +94,31 @@ class RoomClient {
         $userIsAlreadyInRoomQuery = "DELETE FROM room_user WHERE roomId='$roomId' and userId='$userId'";
         mysqli_query($databaseConnection, $userIsAlreadyInRoomQuery);
         DatabaseClient::closeConnection($databaseConnection);
+    }
+
+    public function getRoomsForUserId($userId) {
+        $getRoomWithUserIdQuery = "SELECT roomId from room_user where userId = $userId";
+        $databaseConnection = DatabaseClient::openConnection();
+
+        $result = mysqli_query($databaseConnection, $getRoomWithUserIdQuery);
+
+        $roomsIds = array();
+
+        if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $roomId = $row["roomId"];
+                $roomsIds[] = $roomId;
+            }
+        }
+
+        DatabaseClient::closeConnection($databaseConnection);
+
+        $rooms = array();
+        foreach($roomsIds as $roomId) {
+            $rooms[] = $this->getRoomWithId($roomId);
+        }
+
+        return $rooms;
     }
 
     /**

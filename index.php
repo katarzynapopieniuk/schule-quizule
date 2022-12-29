@@ -93,7 +93,7 @@ $roomClient = new RoomClient();
               }
               if (isset($_SESSION['logged']) && isset($_SESSION['Id']) && isset($_SESSION['accountType'])) {
                   $accountType = $_SESSION['accountType'];
-                  if(AccountType::isTeacher($accountType)) {
+                  if(AccountType::isTeacher($accountType) || AccountType::isUser($accountType)) {
                       echo '<div class="option" onclick="setSeeCurrentUseRoomsOptionPOST()">  Moje pokoje</div>';
                   }
               }
@@ -138,6 +138,9 @@ $roomClient = new RoomClient();
                 $rooms = $roomClient->getRoomsForTeacherId($_SESSION['Id']);
                 RoomListDisplay::displayRoomList($rooms);
                 RoomCreatorDisplay::displayCreator();
+            } else if(AccountType::isUser($accountType)) {
+                $rooms = $roomClient->getRoomsForUserId($_SESSION['Id']);
+                RoomListDisplay::displayRoomList($rooms);
             }
         } else if(isset($_POST['createRoom']) && isset($_SESSION['logged']) && isset($_SESSION['Id']) && isset($_POST['roomName'])) {
             RoomCreator::createRoom($_POST['roomName'], $_SESSION['Id'], $roomClient);
