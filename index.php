@@ -44,6 +44,9 @@ if ((isset($_SESSION['overload'])) && ($_SESSION['overload'] == true)) {
     header('Location: attemps_overload.php');
     exit();
 }
+unset($_SESSION['quiz_add_ended']);
+unset($_SESSION['question_add_ended']);
+unset($_SESSION['answer_add_ended']);
 $quizClient = new QuizClient();
 $userClient = new UserClient();
 $roomClient = new RoomClient();
@@ -77,15 +80,25 @@ $roomClient = new RoomClient();
     <header>
         <div class="top-left">
             <a href="logging/logout.php"><?php if (isset($_SESSION['logged'])) {
-              echo "Wyloguj";
-            }
-            ?></a>
+                    echo "Wyloguj";
+                }
+                ?></a>
             <a href="#"><?php if (isset($_SESSION['logged'])) {
-              echo "<p>Welcome ".$_SESSION['email'].'!';
-            }
+                    echo "<p>Welcome ".$_SESSION['email'].'!';
+                }
 
-            ?></a>
+                ?></a>
+            <a href="create_quiz/create_quiz.php"> <?php if (isset($_SESSION['logged']) && isset($_SESSION['accountType'])) {
+                    $accountType = $_SESSION['accountType'];
+                    if(AccountType::isTeacher($accountType)) {
+                        echo "Stwórz Quiz";
+                    }
+
+                }
+                ?>
+            </a>
             <a href="#"> Temp</a>
+  </div>
 
               <?php
               if (isset($_SESSION['logged']) && isset($_SESSION['Id'])) {

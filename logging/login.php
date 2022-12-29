@@ -23,7 +23,7 @@ if (isset($_POST['login'])) {
     $isValidationOK = true;
     $login = $_POST['login'];
     $password = $_POST['log_password'];
-//    $isVerificate=$_GET['log_verificate'];
+
     require_once "../database/control/DatabaseClient.php";
     mysqli_report(MYSQLI_REPORT_STRICT);
 

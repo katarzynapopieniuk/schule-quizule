@@ -180,7 +180,6 @@ if (isset($_POST['reg_email'])) {
     <meta name="viewport" content="width=devic-width,
     initial-scale=1.0">
     <title>Registration</title>
-    <!--    <script src="https://www.google.com/recaptcha/enterprise.js?render=6Lf6HHMgAAAAAAwZVMI5CgLMCALN7ZWh4ra3ad_V"></script>-->
     <link rel="stylesheet" href="login_style.css">
 </head>
 <body>
@@ -252,14 +251,6 @@ if (isset($_POST['reg_email'])) {
                         }
                         ?>
                         <br>
-                        <!--                        <div class="g-recaptcha" data-sitekey="Ld7NB0jAAAAAJi1sLXx0kY3puqYbCabU2uIxJFs"></div>-->
-                        <!--                        --><?php
-                        //                        if(isset($_SESSION['e_bot'])){
-                        //                            echo '<div class="error">'.$_SESSION['e_bot'].'</div>';
-                        //                            unset($_SESSION['e_bot']);
-                        //                        }
-                        //                        ?>
-                        <!--                        <br/>-->
                         <div class="d-flex flex-row align-items-center justify-content-between">
                             <a href="login.php">Login</a>
                             <button type="submit" name="save_radio" class="btn btn-primary">Create Account</button>
