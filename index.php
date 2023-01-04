@@ -110,7 +110,7 @@ $roomClient = new RoomClient();
                       echo '<div class="option" onclick="setSeeCurrentUseRoomsOptionPOST()">  Moje pokoje</div>';
                   }
 
-                  echo '<div class="option" onclick="setSeeMyQuizzesOptionPOST()">  Moje pokoje</div>';
+                  echo '<div class="option" onclick="setSeeMyQuizzesOptionPOST()">  Moje quizy</div>';
               }
 
               ?>
@@ -136,7 +136,7 @@ $roomClient = new RoomClient();
             if(is_array($quizzes) || is_object($quizzes)) {
                 QuizListDisplay::display($quizzes);
             }
-        } elseif (isset($_POST['current_quiz'])) {
+        } else if(isset($_POST['current_quiz'])) {
             $quizId = $_POST['current_quiz'];
             $quizzes = $quizClient->getQuizzesById($quizId);
 
@@ -173,21 +173,30 @@ $roomClient = new RoomClient();
             $loggedUserId = $_SESSION['Id'];
             if(AccountType::isTeacher($accountType)) {
                 $quizzes = $quizClient->getQuizzesByTeacherId($loggedUserId);
-                QuizListDisplay::display($quizzes);
+                QuizListDisplay::displayQuizListAsOwner($quizzes);
             } elseif (AccountType::isUser($accountType)) {
                 $quizzes = array(Quiz::class);
                 $quizzes[] = $quizClient->getQuizzesSharedWithUserWithId($loggedUserId);
 
                 $rooms = $roomClient->getRoomsForUserId($loggedUserId);
                 foreach ($rooms as $room) {
-                    $quizzesIdsSharedWithRoom = $quizClient->getQuizzesSharedWithRoomWithId($room); // todo
+                    $quizzesIdsSharedWithRoom = $quizClient->getQuizzesSharedWithRoomWithId($room->getId());
                     foreach ($quizzesIdsSharedWithRoom as $quizId) {
                         $quizzes[] = $quizClient->getQuizzesById($quizId);
                     }
                 }
 
-                QuizListDisplay::display($quizzes);
+                QuizListDisplay::displayQuizListAsOwner($quizzes);
             }
+        } else if(isset($_POST['current_quiz_for_owner']) && isset($_SESSION['logged']) && isset($_SESSION['Id']) && isset($_SESSION['accountType'])) {
+            $accountType = $_SESSION['accountType'];
+            $loggedUserId = $_SESSION['Id'];
+            $quizId = $_POST['current_quiz_for_owner'];
+            if(AccountType::isTeacher($accountType)) {
+                QuizDisplay::displayOwnerQuizOptions($quizId, $roomClient, $userClient);
+            }
+        } else if(isset($_POST['shareQuiz']) && isset($_POST['sharedQuizId'])) {
+            // todo
         }
         ?>
     </main>

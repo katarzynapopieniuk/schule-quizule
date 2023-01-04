@@ -10,6 +10,12 @@ function setCurrentQuizPOST(quizId) {
     post(path, params);
 }
 
+function setCurrentQuizAsOwnerPOST(quizId) {
+    const path = '/schule-quizule/';
+    const params = {'current_quiz_for_owner': quizId};
+    post(path, params);
+}
+
 function setSeeCurrentUserDataOptionPOST() {
     const path = '/schule-quizule/';
     const params = {'see_current_user_data': ''};
@@ -25,12 +31,6 @@ function setSeeCurrentUseRoomsOptionPOST() {
 function setSeeMyQuizzesOptionPOST() {
     const path = '/schule-quizule/';
     const params = {'see_my_quizzes': ''};
-    post(path, params);
-}
-
-function setCurrentRoomPOST(roomId) {
-    const path = '/schule-quizule/';
-    const params = {'see_current_room': roomId};
     post(path, params);
 }
 

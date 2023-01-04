@@ -24,7 +24,7 @@ class QuizDisplay {
         <?php
     }
 
-    static function displayQuestion($question) {
+    public static function displayQuestion($question) {
         ?>
         <div class="quizQuestion" id="<?php echo $question->getQuestion()?>">
             <?php echo $question->getQuestion()?>
@@ -39,7 +39,7 @@ class QuizDisplay {
         }
     }
 
-    static function displayAnswer($answer, $questionId) {
+    public static function displayAnswer($answer, $questionId) {
         ?>
         <div class="quizAnswer" id="<?php echo $answer->getId()?>">
             <input type="radio" id="<?php echo $answer->getId()?>" name="answerId:<?php echo $answer->getId()?>" value="<?php echo $answer->getId()?>">
@@ -47,6 +47,35 @@ class QuizDisplay {
             <label for="html">HTML</label><br>
         </div>
         <?php
+    }
 
+    public static function displayOwnerQuizOptions($quizId, \room\control\RoomClient $roomClient, UserClient $userClient) {
+        $roomsIds = $roomClient->getRoomsForSharedQuizWithId($quizId);
+        echo "Quiz udostępniony pokojom:";
+        \room\display\RoomListDisplay::displayRoomList($roomsIds);
+
+        $usersIds = $userClient->getUserForSharedQuizWithId($quizId); // todo
+        echo "Quiz udostępniony uczniom:";
+
+        $users = array();
+        foreach ($usersIds as $userId) {
+            $user = new User($userId);
+            $userClient->setUserData($user);
+            $users[] = $user;
+        }
+        foreach ($users as $user) {
+            UserDataDisplay::displayUserSimpleData($user);
+            if(self::isLoggedUserTeacher()) {
+                ///UserDataDisplay::displayUnshareQuizFromUserButton($quizId, $user->getId()); TODO
+            }
+        }
+
+        ?>
+
+        <form action="/schule-quizule/" method="post">
+            <input type="hidden" name="sharedQuizId" id="submittedQuizId" value="<?php print "$quizId" ?>"/>
+            <input type="submit" name="shareQuiz" value="udostępnij quiz">
+        </form>
+        <?php
     }
 }

@@ -121,6 +121,26 @@ class RoomClient {
         return $rooms;
     }
 
+    public function getRoomsForSharedQuizWithId($quizId) {
+        $getRoomWithUserIdQuery = "SELECT roomId from room_quiz where quizId = $quizId";
+        $databaseConnection = DatabaseClient::openConnection();
+
+        $result = mysqli_query($databaseConnection, $getRoomWithUserIdQuery);
+
+        $roomsIds = array();
+
+        if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $roomId = $row["roomId"];
+                $roomsIds[] = $roomId;
+            }
+        }
+
+        DatabaseClient::closeConnection($databaseConnection);
+
+        return $roomsIds;
+    }
+
     /**
      * @param $roomId
      * @return array
