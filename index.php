@@ -17,6 +17,7 @@ require_once("./quiz/display/QuizListDisplay.php");
 require_once("./quiz/display/QuizDisplay.php");
 require_once("./quiz/control/QuizClient.php");
 require_once("./quiz/control/QuizResultCalculator.php");
+require_once("./quiz/control/QuizSharer.php");
 require_once("./database/control/DatabaseClient.php");
 require_once("./user/control/UserClient.php");
 require_once("./user/display/UserDataDisplay.php");
@@ -98,7 +99,7 @@ $roomClient = new RoomClient();
                 ?>
             </a>
             <a href="#"> Temp</a>
-  </div>
+        </div>
 
               <?php
               if (isset($_SESSION['logged']) && isset($_SESSION['Id'])) {
@@ -112,7 +113,6 @@ $roomClient = new RoomClient();
 
                   echo '<div class="option" onclick="setSeeMyQuizzesOptionPOST()">  Moje quizy</div>';
 
-                  echo '<div class="option" onclick="setSeeMyQuizzesOptionPOST()">  Moje pokoje</div>';
               }
 
               ?>
@@ -124,8 +124,8 @@ $roomClient = new RoomClient();
                     <li><a href="logging/register.php">Zarejestruj</a></li>
                 </ul>
             </nav>
-        </div>
     </header>
+</div>
 
     <main class="content" style="margin-left:250px">
         <article>Article</article>
@@ -177,17 +177,16 @@ $roomClient = new RoomClient();
                 $quizzes = $quizClient->getQuizzesByTeacherId($loggedUserId);
                 QuizListDisplay::displayQuizListAsOwner($quizzes);
             } elseif (AccountType::isUser($accountType)) {
-                $quizzes = array(Quiz::class);
-                $quizzes[] = $quizClient->getQuizzesSharedWithUserWithId($loggedUserId);
+                $quizzes = $quizClient->getQuizzesSharedWithUserWithId($loggedUserId);
 
                 $rooms = $roomClient->getRoomsForUserId($loggedUserId);
                 foreach ($rooms as $room) {
-                    $quizzesIdsSharedWithRoom = $quizClient->getQuizzesSharedWithRoomWithId($room->getId());
-                    foreach ($quizzesIdsSharedWithRoom as $quizId) {
-                        $quizzes[] = $quizClient->getQuizzesById($quizId);
+                    $quizzesSharedWithRoom = $quizClient->getQuizzesSharedWithRoomWithId($room->getId());
+                    foreach ($quizzesSharedWithRoom as $quiz) {
+                        $quizzes[] = $quiz;
                     }
                 }
-
+                
                 QuizListDisplay::displayQuizListAsOwner($quizzes);
             }
         } else if(isset($_POST['current_quiz_for_owner']) && isset($_SESSION['logged']) && isset($_SESSION['Id']) && isset($_SESSION['accountType'])) {
@@ -198,7 +197,13 @@ $roomClient = new RoomClient();
                 QuizDisplay::displayOwnerQuizOptions($quizId, $roomClient, $userClient);
             }
         } else if(isset($_POST['shareQuiz']) && isset($_POST['sharedQuizId'])) {
-            // todo
+            if(isset($_POST['shareQuizWithRoomId']) && isset($_POST['sharedRoomId'])) {
+                QuizSharer::shareQuizWithRoom($_POST['sharedQuizId'], $_POST['sharedRoomId'], $quizClient);
+            } else if(isset($_POST['unshareQuizWithRoomId']) && isset($_POST['unsharedRoomId'])) {
+                QuizSharer::unshareQuizWithRoom($_POST['sharedQuizId'], $_POST['unsharedRoomId'], $quizClient);
+            }
+            QuizSharer::displayRoomsWithShareUnshareOptions($_POST['sharedQuizId'], $_SESSION['Id'], $roomClient, $quizClient);
+            // todo share/unshare with user
         }
         ?>
     </main>
@@ -207,8 +212,7 @@ $roomClient = new RoomClient();
     </footer>
 
 
-</div>
-
+</body>
 
 
 

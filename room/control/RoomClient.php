@@ -138,7 +138,12 @@ class RoomClient {
 
         DatabaseClient::closeConnection($databaseConnection);
 
-        return $roomsIds;
+        $rooms = array();
+        foreach($roomsIds as $roomId) {
+            $room = $this->getRoomWithId($roomId);
+            $rooms[] = $room;
+        }
+        return $rooms;
     }
 
     /**

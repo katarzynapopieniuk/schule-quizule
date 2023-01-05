@@ -145,6 +145,29 @@ class QuizClient {
         return $this->getQuizzesByIds($quizzesIds);
     }
 
+    public function isQuizSharedWithRoomWithId($quizId, $roomId) : bool {
+        $getRoomWithUserIdQuery = "SELECT count(*) as total from room_quiz where roomId = $roomId and quizId=$quizId";
+        $databaseConnection = DatabaseClient::openConnection();
+        $result = mysqli_query($databaseConnection, $getRoomWithUserIdQuery);
+        $data = $result->fetch_assoc();
+        DatabaseClient::closeConnection($databaseConnection);
+        return $data['total'] > 0;
+    }
+
+    public function shareQuizWithRoom($sharedQuizId, $sharedRoomId) {
+        $databaseConnection = DatabaseClient::openConnection();
+        $createAddUserToRoomQuery = "INSERT INTO room_quiz (quizId, roomId) VALUES ('$sharedQuizId', '$sharedRoomId')";
+        mysqli_query($databaseConnection, $createAddUserToRoomQuery);
+        DatabaseClient::closeConnection($databaseConnection);
+    }
+
+    public function unshareQuizWithRoom($sharedQuizId, $unsharedRoomId) {
+        $databaseConnection = DatabaseClient::openConnection();
+        $createAddUserToRoomQuery = "DELETE FROM room_quiz WHERE quizId='$sharedQuizId' and roomId='$unsharedRoomId'";
+        mysqli_query($databaseConnection, $createAddUserToRoomQuery);
+        DatabaseClient::closeConnection($databaseConnection);
+    }
+
     /**
      * @param array $quizzesIds
      * @return array
@@ -152,7 +175,10 @@ class QuizClient {
     private function getQuizzesByIds(array $quizzesIds): array {
         $quizzes = array();
         foreach ($quizzesIds as $quizId) {
-            $quizzes[] = $this->getQuizzesById($quizId);
+            $quizzesWithGivenId = $this->getQuizzesById($quizId);
+            foreach ($quizzesWithGivenId as $quizWithGivenId) {
+                $quizzes[] = $quizWithGivenId;
+            }
         }
 
         return $quizzes;
