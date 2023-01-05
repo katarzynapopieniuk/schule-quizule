@@ -111,6 +111,8 @@ $roomClient = new RoomClient();
                   }
 
                   echo '<div class="option" onclick="setSeeMyQuizzesOptionPOST()">  Moje quizy</div>';
+
+                  echo '<div class="option" onclick="setSeeMyQuizzesOptionPOST()">  Moje pokoje</div>';
               }
 
               ?>
