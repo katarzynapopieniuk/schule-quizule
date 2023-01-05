@@ -77,17 +77,19 @@ a:hover {
 #accountType:checked ~ #hide {
     visibility: visible;
 }
-#password:hover{
-    background: firebrick;
+table, th, td {
+    border:2px solid black;
+    width:100%;
 }
-#question2{
-    visibility: collapse;
+#name{
+    width: 400px;
+    height: 30px;
 }
-
-#addMoreQuestion1:checked ~ * #question2 {
-    visibility: visible;
+#question{
+    width: 80%;
+    height: 200px;
 }
-
-#addMoreQuestion1:checked ~ #hide {
-    visibility: visible;
+#answer{
+    width: 50%;
+    height: 100px;
 }
