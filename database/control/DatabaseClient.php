@@ -21,7 +21,7 @@ class DatabaseClient {
     }
 
     static function createPDO() {
-        return new PDO('mysql:host=localhost;dbname=schule_quizule;port=3307', "root", "");
+        return new PDO('mysql:host=localhost;dbname=schule_quizule', "root", "");
     }
 
 }
