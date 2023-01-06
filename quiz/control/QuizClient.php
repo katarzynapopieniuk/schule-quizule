@@ -168,6 +168,25 @@ class QuizClient {
         DatabaseClient::closeConnection($databaseConnection);
     }
 
+    public function isCorrectAnswer($answerId) {
+        $databaseConnection = DatabaseClient::openConnection();
+        $questionAnswersQuery = "SELECT isCorrect from answer where id = $answerId";
+        $result = mysqli_query($databaseConnection, $questionAnswersQuery);
+
+        if (mysqli_num_rows($result) > 0) {
+            while($row = mysqli_fetch_assoc($result)) {
+                return $row["isCorrect"];
+            }
+        }
+    }
+
+    public function getAllQuestionAmount($quizId) {
+        $databaseConnection = DatabaseClient::openConnection();
+        $questionAnswersQuery = "SELECT id from quiz_question where quizId = $quizId";
+        $result = mysqli_query($databaseConnection, $questionAnswersQuery);
+        return mysqli_num_rows($result);
+    }
+
     /**
      * @param array $quizzesIds
      * @return array
