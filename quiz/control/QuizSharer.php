@@ -23,6 +23,24 @@ class QuizSharer {
         $quizClient->unshareQuizWithRoom($sharedQuizId, $unsharedRoomId);
     }
 
+    public static function displayShareWithUserOption($sharedQuizId, QuizClient $quizClient) {
+        ?>
+        <br/>
+        <div>Udostępnij quiz uczniowi</div>
+        <br/>
+        <form action="/schule-quizule/" method="post">
+            <input type="text" class="form-control" id="share_quiz_with_user_with_email" placeholder="email" name="share_quiz_with_user_with_email" required/>
+            <input type="hidden" name="sharedQuizId" id="roomId" value="<?php print "$sharedQuizId" ?>"/>
+            <input type="submit" name="shareQuiz" value="udostępnij quiz uczniowi"/>
+        </form>
+
+        <?php
+    }
+
+    public static function shareQuizWithUserWithEmail($sharedQuizId, $userEmail, QuizClient $quizClient, UserClient $userClient) {
+        $quizClient->shareQuizWithUserWithEmail($sharedQuizId, $userEmail, $userClient);
+    }
+
     private static function isQuizAlreadySharedWithRoom($quizId, $roomId, QuizClient $quizClient): bool {
         return $quizClient->isQuizSharedWithRoomWithId($quizId, $roomId);
     }

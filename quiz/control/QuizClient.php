@@ -168,6 +168,14 @@ class QuizClient {
         DatabaseClient::closeConnection($databaseConnection);
     }
 
+    public function shareQuizWithUserWithEmail($sharedQuizId, $userEmail, $userClient) {
+        $userId = $userClient->getUserIdForEmail($userEmail);
+        $databaseConnection = DatabaseClient::openConnection();
+        $createAddUserToRoomQuery = "INSERT INTO user_quiz (quizId, userId) VALUES ('$sharedQuizId', '$userId')";
+        mysqli_query($databaseConnection, $createAddUserToRoomQuery);
+        DatabaseClient::closeConnection($databaseConnection);
+    }
+
     public function isCorrectAnswer($answerId) {
         $databaseConnection = DatabaseClient::openConnection();
         $questionAnswersQuery = "SELECT isCorrect from answer where id = $answerId";

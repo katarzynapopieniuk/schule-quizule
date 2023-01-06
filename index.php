@@ -186,7 +186,7 @@ $roomClient = new RoomClient();
                         $quizzes[] = $quiz;
                     }
                 }
-                
+
                 QuizListDisplay::displayQuizListAsOwner($quizzes);
             }
         } else if(isset($_POST['current_quiz_for_owner']) && isset($_SESSION['logged']) && isset($_SESSION['Id']) && isset($_SESSION['accountType'])) {
@@ -201,9 +201,11 @@ $roomClient = new RoomClient();
                 QuizSharer::shareQuizWithRoom($_POST['sharedQuizId'], $_POST['sharedRoomId'], $quizClient);
             } else if(isset($_POST['unshareQuizWithRoomId']) && isset($_POST['unsharedRoomId'])) {
                 QuizSharer::unshareQuizWithRoom($_POST['sharedQuizId'], $_POST['unsharedRoomId'], $quizClient);
+            } else if (isset($_POST['share_quiz_with_user_with_email'])) {
+                QuizSharer::shareQuizWithUserWithEmail($_POST['sharedQuizId'], $_POST['share_quiz_with_user_with_email'], $quizClient, $userClient);
             }
             QuizSharer::displayRoomsWithShareUnshareOptions($_POST['sharedQuizId'], $_SESSION['Id'], $roomClient, $quizClient);
-            // todo share/unshare with user
+            QuizSharer::displayShareWithUserOption($_POST['sharedQuizId'], $quizClient);
         }
         ?>
     </main>
