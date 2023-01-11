@@ -39,4 +39,24 @@ class UserClient {
         DatabaseClient::closeConnection($databaseConnection);
         throw new MissingUserException();
     }
+
+    public function getUserForSharedQuizWithId($quizId) {
+        $getRoomWithUserIdQuery = "SELECT userId from user_quiz where quizId = $quizId";
+        $databaseConnection = DatabaseClient::openConnection();
+
+        $result = mysqli_query($databaseConnection, $getRoomWithUserIdQuery);
+
+        $usersIds = array();
+
+        if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $userId = $row["userId"];
+                $usersIds[] = $userId;
+            }
+        }
+
+        DatabaseClient::closeConnection($databaseConnection);
+
+        return $usersIds;
+    }
 }
