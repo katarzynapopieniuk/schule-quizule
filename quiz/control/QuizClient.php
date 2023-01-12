@@ -24,7 +24,7 @@ class QuizClient {
         return $quizzes;
     }
 
-    public function getQuizzesById($quizId) {
+    public function getQuizzesById($quizId) : array{
         $databaseConnection = DatabaseClient::openConnection();
         $query = "SELECT * from quiz where id = '$quizId'";
 
@@ -195,6 +195,59 @@ class QuizClient {
         return mysqli_num_rows($result);
     }
 
+    public function getAnswersIdsFilledByUser($userId, array $answersIds) {
+        $databaseConnection = DatabaseClient::openConnection();
+        $answersIdsJoined = implode(", ", $answersIds);
+        $filledAnswersIdsQuery = "SELECT answerId from filled_answer where answerId in ($answersIdsJoined) and userId = $userId";
+        $result = mysqli_query($databaseConnection, $filledAnswersIdsQuery);
+
+        $filledAnswersIds = array();
+
+        if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $filledAnswersIds[] = $row["answerId"];
+            }
+        }
+
+        DatabaseClient::closeConnection($databaseConnection);
+
+        return $filledAnswersIds;
+    }
+
+    public function saveFilledAnswersToDatabase() {
+        $filledAnswersIds = $this->getFilledAnswersIds();
+        $userId = $_SESSION['Id'];
+        $databaseConnection = DatabaseClient::openConnection();
+
+        foreach ($filledAnswersIds as $answerId) {
+            $filledAnswersIdsQuery = "INSERT INTO filled_answer (answerId, userId) values ('$answerId', '$userId')";
+            mysqli_query($databaseConnection, $filledAnswersIdsQuery);
+        }
+
+        DatabaseClient::closeConnection($databaseConnection);
+    }
+
+    public function cleanFilledAnswersIfAlreadyFilled($submittedQuizId, $userId) {
+        $quizzes = $this->getQuizzesById($submittedQuizId);
+        if(count($quizzes) < 1) {
+            return;
+        }
+
+        $quiz = $quizzes[0];
+        $answersIds = array();
+        foreach($quiz->getQuestions() as $question) {
+            $answers = $question->getAnswers();
+            foreach ($answers as $answer) {
+                $answersIds[] = $answer->getId();
+            }
+        }
+
+        $answersIdsFilledByUser = $this->getAnswersIdsFilledByUser($userId, $answersIds);
+        if(count($answersIdsFilledByUser) > 0) {
+            $this->cleanFilledAnswers($answersIdsFilledByUser, $userId);
+        }
+    }
+
     /**
      * @param array $quizzesIds
      * @return array
@@ -209,5 +262,27 @@ class QuizClient {
         }
 
         return $quizzes;
+    }
+
+    /**
+     * @return array
+     */
+    private function getFilledAnswersIds() {
+        $filledAnswersIds = array();
+        foreach ($_POST as $key => $value) {
+            if (strpos($key, 'answerId') === 0) {
+                $answerId = explode(':', $key)[1];
+                $filledAnswersIds[] = $answerId;
+            }
+        }
+        return $filledAnswersIds;
+    }
+
+    private function cleanFilledAnswers(array $answersIdsFilledByUser, $userId) {
+        $databaseConnection = DatabaseClient::openConnection();
+        $answersIdsJoined = implode(", ", $answersIdsFilledByUser);
+        $userIsAlreadyInRoomQuery = "DELETE FROM filled_answer WHERE answerId in ($answersIdsJoined) and userId='$userId'";
+        mysqli_query($databaseConnection, $userIsAlreadyInRoomQuery);
+        DatabaseClient::closeConnection($databaseConnection);
     }
 }
