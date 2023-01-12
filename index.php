@@ -147,6 +147,10 @@ $roomClient = new RoomClient();
             }
         } else if(isset($_POST['submittedQuizId'])) {
             echo QuizResultCalculator::calculateQuizResult($_POST, $quizClient);
+            if(isset($_POST['saveFilledAnswers']) && isset($_SESSION['logged']) && isset($_SESSION['Id'])) {
+                $quizClient->cleanFilledAnswersIfAlreadyFilled($_POST['submittedQuizId'], $_SESSION['Id']);
+                $quizClient->saveFilledAnswersToDatabase();
+            }
         } else if(isset($_POST['see_current_user_data']) && isset($_SESSION['logged']) && isset($_SESSION['Id'])) {
             UserDataDisplay::displayDataForUserWithId($_SESSION['Id'], $userClient);
         } else if(isset($_POST['see_current_user_rooms']) && isset($_SESSION['logged']) && isset($_SESSION['Id']) && isset($_SESSION['accountType'])) {
@@ -195,6 +199,8 @@ $roomClient = new RoomClient();
             $quizId = $_POST['current_quiz_for_owner'];
             if(AccountType::isTeacher($accountType)) {
                 QuizDisplay::displayOwnerQuizOptions($quizId, $roomClient, $userClient);
+            } elseif (AccountType::isUser($accountType)) {
+                QuizDisplay::displayQuizOptionsForUser($quizId, $loggedUserId, $userClient, $quizClient);
             }
         } else if(isset($_POST['shareQuiz']) && isset($_POST['sharedQuizId'])) {
             if(isset($_POST['shareQuizWithRoomId']) && isset($_POST['sharedRoomId'])) {

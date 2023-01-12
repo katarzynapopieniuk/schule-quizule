@@ -2,6 +2,8 @@
 
 class QuizDisplay {
 
+    const QUIZ_NOT_SOLVED_MESSAGE = "Quiz nierozwiązany";
+
     public static function display($quiz) {
         $quizId = $quiz->getId();
         ?>
@@ -16,6 +18,10 @@ class QuizDisplay {
                 foreach($questions as $question) {
                     self::displayQuestion($question);
                 }
+            }
+
+            if(isset($_POST['fillSharedQuiz']) && isset($_SESSION['logged']) && isset($_SESSION['Id'])) {
+                self::addSaveAnswersHiddenPost();
             }
             ?>
             <input type="hidden" name="submittedQuizId" id="submittedQuizId" value="<?php print "$quizId" ?>"/>
@@ -54,7 +60,7 @@ class QuizDisplay {
         echo "Quiz udostępniony pokojom:";
         \room\display\RoomListDisplay::displayRoomList($roomsIds);
 
-        $usersIds = $userClient->getUserForSharedQuizWithId($quizId); // todo
+        $usersIds = $userClient->getUserForSharedQuizWithId($quizId);
         echo "Quiz udostępniony uczniom:";
 
         $users = array();
@@ -76,6 +82,66 @@ class QuizDisplay {
             <input type="hidden" name="sharedQuizId" id="submittedQuizId" value="<?php print "$quizId" ?>"/>
             <input type="submit" name="shareQuiz" value="udostępnij quiz">
         </form>
+        <?php
+    }
+
+    public static function displayQuizOptionsForUser($quizId, $userId, UserClient $userClient, QuizClient $quizClient) {
+        self::tryGetQuizWithIdResultIfAlreadyFilled($userId, $quizId, $quizClient);
+    }
+
+    private static function tryGetQuizWithIdResultIfAlreadyFilled($userId, $quizId, QuizClient $quizClient) {
+        $quizzes = $quizClient->getQuizzesById($quizId);
+        if(count($quizzes) > 0) {
+            $quiz = $quizzes[0];
+            $quizResult = self::tryGetQuizResultIfAlreadyFilled($userId, $quiz, $quizClient);
+            echo $quizResult . "<br/>";
+            self::displayFillQuizOption($quizId);
+        }
+    }
+
+    private static function tryGetQuizResultIfAlreadyFilled($userId, Quiz $quiz, QuizClient $quizClient) {
+        $correctAnswersIds = array();
+        $answersIds = array();
+        foreach($quiz->getQuestions() as $question) {
+            $answers = $question->getAnswers();
+            foreach ($answers as $answer) {
+                $answersIds[] = $answer->getId();
+                if($answer->getIsCorrect()) {
+                    $correctAnswersIds[] = $answer->getId();
+                }
+            }
+        }
+
+        $answersIdsFilledByUser = $quizClient->getAnswersIdsFilledByUser($userId, $answersIds);
+        if(count($answersIdsFilledByUser) <= 0) {
+            return self::QUIZ_NOT_SOLVED_MESSAGE;
+        }
+        $correctFilledAnswersAmount = self::calculateCorrectFilledAnswersAmount($answersIdsFilledByUser, $correctAnswersIds);
+        return "Twój wynik: " . $correctFilledAnswersAmount . "/" . count($correctAnswersIds);
+    }
+
+    private static function calculateCorrectFilledAnswersAmount(array $answersIdsFilledByUser, array $correctAnswersIds): int {
+        $filledCorrectAnswerCount = 0;
+        foreach($answersIdsFilledByUser as $filledAnswerId) {
+            if(in_array($filledAnswerId, $correctAnswersIds)) {
+                $filledCorrectAnswerCount++;
+            }
+        }
+        return $filledCorrectAnswerCount;
+    }
+
+    private static function displayFillQuizOption($quizId) {
+        ?>
+        <form action="/schule-quizule/" method="post">
+            <input type="hidden" name="current_quiz" id="current_quiz" value="<?php print "$quizId" ?>"/>
+            <input type="submit" name="fillSharedQuiz" value="wypełnij quiz">
+        </form>
+        <?php
+    }
+
+    private static function addSaveAnswersHiddenPost() {
+        ?>
+        <input type="hidden" name="saveFilledAnswers" id="saveFilledAnswers""/>
         <?php
     }
 }
