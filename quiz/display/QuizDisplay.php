@@ -55,13 +55,13 @@ class QuizDisplay {
         <?php
     }
 
-    public static function displayOwnerQuizOptions($quizId, \room\control\RoomClient $roomClient, UserClient $userClient) {
-        $roomsIds = $roomClient->getRoomsForSharedQuizWithId($quizId);
-        echo "Quiz udostępniony pokojom:";
-        \room\display\RoomListDisplay::displayRoomList($roomsIds);
+    public static function displayOwnerQuizOptions($quizId, \room\control\RoomClient $roomClient, UserClient $userClient, QuizClient $quizClient) {
+        $rooms = $roomClient->getRoomsForSharedQuizWithId($quizId);
+        echo "Quiz udostępniony pokojom: <br>";
+        \room\display\RoomListDisplay::displayRoomList($rooms);
 
         $usersIds = $userClient->getUserForSharedQuizWithId($quizId);
-        echo "Quiz udostępniony uczniom:";
+        echo "Quiz udostępniony uczniom: <br>";
 
         $users = array();
         foreach ($usersIds as $userId) {
@@ -71,11 +71,19 @@ class QuizDisplay {
         }
         foreach ($users as $user) {
             UserDataDisplay::displayUserSimpleData($user);
-            if(self::isLoggedUserTeacher()) {
-                ///UserDataDisplay::displayUnshareQuizFromUserButton($quizId, $user->getId()); TODO
-            }
         }
 
+        echo "Wyniki uczniów: <br>";
+        foreach ($rooms as $room) {
+            $usersInRoom = $roomClient->getUsersInRoom($room->getId(), $userClient);
+            foreach ($usersInRoom as $user) {
+                $users[] = $user;
+            }
+        }
+        $quiz = $quizClient->getQuizzesById($quizId)[0];
+        foreach ($users as $user) {
+            echo $user->getName() . " " . $user->getSurname() . ": " . self::tryGetQuizResultIfAlreadyFilled($user->getId(), $quiz, $quizClient) . "<br>";
+        }
         ?>
 
         <form action="/schule-quizule/" method="post">
@@ -89,17 +97,7 @@ class QuizDisplay {
         self::tryGetQuizWithIdResultIfAlreadyFilled($userId, $quizId, $quizClient);
     }
 
-    private static function tryGetQuizWithIdResultIfAlreadyFilled($userId, $quizId, QuizClient $quizClient) {
-        $quizzes = $quizClient->getQuizzesById($quizId);
-        if(count($quizzes) > 0) {
-            $quiz = $quizzes[0];
-            $quizResult = self::tryGetQuizResultIfAlreadyFilled($userId, $quiz, $quizClient);
-            echo $quizResult . "<br/>";
-            self::displayFillQuizOption($quizId);
-        }
-    }
-
-    private static function tryGetQuizResultIfAlreadyFilled($userId, Quiz $quiz, QuizClient $quizClient) {
+    public static function tryGetQuizResultIfAlreadyFilled($userId, Quiz $quiz, QuizClient $quizClient) {
         $correctAnswersIds = array();
         $answersIds = array();
         foreach($quiz->getQuestions() as $question) {
@@ -113,11 +111,22 @@ class QuizDisplay {
         }
 
         $answersIdsFilledByUser = $quizClient->getAnswersIdsFilledByUser($userId, $answersIds);
+
         if(count($answersIdsFilledByUser) <= 0) {
             return self::QUIZ_NOT_SOLVED_MESSAGE;
         }
         $correctFilledAnswersAmount = self::calculateCorrectFilledAnswersAmount($answersIdsFilledByUser, $correctAnswersIds);
-        return "Twój wynik: " . $correctFilledAnswersAmount . "/" . count($correctAnswersIds);
+        return "Wynik: " . $correctFilledAnswersAmount . "/" . count($correctAnswersIds);
+    }
+
+    private static function tryGetQuizWithIdResultIfAlreadyFilled($userId, $quizId, QuizClient $quizClient) {
+        $quizzes = $quizClient->getQuizzesById($quizId);
+        if(count($quizzes) > 0) {
+            $quiz = $quizzes[0];
+            $quizResult = self::tryGetQuizResultIfAlreadyFilled($userId, $quiz, $quizClient);
+            echo $quizResult . "<br/>";
+            self::displayFillQuizOption($quizId);
+        }
     }
 
     private static function calculateCorrectFilledAnswersAmount(array $answersIdsFilledByUser, array $correctAnswersIds): int {

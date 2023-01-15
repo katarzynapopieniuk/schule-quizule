@@ -204,7 +204,7 @@ $roomClient = new RoomClient();
             $loggedUserId = $_SESSION['Id'];
             $quizId = $_POST['current_quiz_for_owner'];
             if(AccountType::isTeacher($accountType)) {
-                QuizDisplay::displayOwnerQuizOptions($quizId, $roomClient, $userClient);
+                QuizDisplay::displayOwnerQuizOptions($quizId, $roomClient, $userClient, $quizClient);
             } elseif (AccountType::isUser($accountType)) {
                 QuizDisplay::displayQuizOptionsForUser($quizId, $loggedUserId, $userClient, $quizClient);
             }
