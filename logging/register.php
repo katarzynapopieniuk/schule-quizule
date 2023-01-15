@@ -90,8 +90,8 @@ if (isset($_POST['reg_email'])) {
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
             $mail->Port = 465;
             $mail->SMTPAuth = true;
-            $mail->Username = 'polskiorzel19@gmail.com';
-            $mail->Password = 'ewbitscqjmrqarjg';
+            $mail->Username = 'schule.quizule@gmail.com';
+            $mail->Password = 'spnrrdvasopriody';
             $mail->CharSet = 'UTF-8';
             $mail->setFrom('no-reply@domena.pl', 'Schule Quizule');
             $mail->addAddress($email);
