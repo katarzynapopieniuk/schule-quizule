@@ -67,8 +67,8 @@ $roomClient = new RoomClient();
 <!-- Navbar -->
     
 <div class="col-1">
-    <a href="#">
-    <img src="LOGO.png" alt="logo" </a>
+    <img src="LOGO.png" alt="logo">
+
 
     <!-- Sidebar -->
     <nav class="topics-menu">
@@ -80,6 +80,7 @@ $roomClient = new RoomClient();
 <div class="col-2">
     <header>
         <div class="top-left">
+
             <a href="logging/logout.php"><?php if (isset($_SESSION['logged'])) {
                     echo "Wyloguj";
                 }
@@ -87,8 +88,7 @@ $roomClient = new RoomClient();
             <a href="#"><?php if (isset($_SESSION['logged'])) {
                     echo "<p>Welcome ".$_SESSION['email'].'!';
                 }
-
-                ?></a>
+                ?></a><br>
             <a href="create_quiz/create_quiz.php"> <?php if (isset($_SESSION['logged']) && isset($_SESSION['accountType'])) {
                     $accountType = $_SESSION['accountType'];
                     if(AccountType::isTeacher($accountType)) {
@@ -98,9 +98,8 @@ $roomClient = new RoomClient();
                 }
                 ?>
             </a>
-            <a href="#"> Temp</a>
         </div>
-
+        <div class="top-center">
               <?php
               if (isset($_SESSION['logged']) && isset($_SESSION['Id'])) {
                   echo '<div class="option" onclick="setSeeCurrentUserDataOptionPOST()">  Moje dane</div>';
@@ -116,7 +115,7 @@ $roomClient = new RoomClient();
               }
 
               ?>
-
+        </div>
             <nav class="dropdown">
                 <a href="#">Logowanie</a>
                 <ul>
@@ -125,10 +124,8 @@ $roomClient = new RoomClient();
                 </ul>
             </nav>
     </header>
-</div>
 
     <main class="content" style="margin-left:250px">
-        <article>Article</article>
         <?php
         if(isset($_POST['current_category'])) {
             $category = $_POST['current_category'];
@@ -215,8 +212,12 @@ $roomClient = new RoomClient();
         }
         ?>
     </main>
+</div>
+
+
+
     <footer>
-        <h4>Footer</h4>
+
     </footer>
 
 
