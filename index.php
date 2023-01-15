@@ -98,6 +98,15 @@ $roomClient = new RoomClient();
                 }
                 ?>
             </a>
+            <a href="generate_key/generate_key.php"> <?php if (isset($_SESSION['logged']) && isset($_SESSION['accountType'])) {
+                    $accountType = $_SESSION['accountType'];
+                    if(AccountType::isAdmin($accountType)) {
+                        echo "Wygeneruj klucz dostępu";
+                    }
+
+                }
+                ?>
+            </a>
         </div>
         <div class="top-center">
               <?php

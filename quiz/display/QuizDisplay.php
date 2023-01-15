@@ -50,7 +50,7 @@ class QuizDisplay {
         <div class="quizAnswer" id="<?php echo $answer->getId()?>">
             <input type="radio" id="<?php echo $answer->getId()?>" name="answerId:<?php echo $answer->getId()?>" value="<?php echo $answer->getId()?>">
                 <?php echo $answer->getContent()?>
-            <label for="html">HTML</label><br>
+            <label for="html"></label><br>
         </div>
         <?php
     }
