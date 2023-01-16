@@ -4,7 +4,7 @@ class QuizClient {
 
     public function getQuizzesByCategory($category) {
         $databaseConnection = DatabaseClient::openConnection();
-        $query = "SELECT * from quiz where category = '$category' AND isPublic=1";
+        $query = "SELECT * from quiz where category = '$category' AND isPublic=0";
 
         $result = mysqli_query($databaseConnection, $query);
         $quizzes = array();
