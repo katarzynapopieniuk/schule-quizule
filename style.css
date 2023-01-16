@@ -96,3 +96,15 @@ footer {
     right: 0;
     left: 0;
 }
+#search{
+    width: auto;
+    height: auto;
+
+}
+#search_engine{
+    background-color: #eeeeee;
+    padding: 10px 20px;
+    border-radius: 5px;
+    width: 300px;
+    height: 38px;
+}

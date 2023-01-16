@@ -109,6 +109,8 @@ $roomClient = new RoomClient();
             </a>
         </div>
         <div class="top-center">
+            <a href="quiz_searcher/searcher.php"> <?php if (isset($_SESSION['logged']) && isset($_SESSION['Id'])) {
+                echo '<div id="search_engine"> 🔍 </div>'; }?> </a>
               <?php
               if (isset($_SESSION['logged']) && isset($_SESSION['Id'])) {
                   echo '<div class="option" onclick="setSeeCurrentUserDataOptionPOST()">  Moje dane</div>';

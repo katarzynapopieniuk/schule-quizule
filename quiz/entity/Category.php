@@ -2,7 +2,7 @@
 
 class Category {
     const POLSKI= "polski";
-    const MATEMATYKA = "matematyka";
+    const MATEMATYKA = "matma";
     const PRZYRODA = "przyroda";
     const ANGIELSKI = "angielski";
 
