@@ -80,7 +80,7 @@ $roomClient = new RoomClient();
 <div class="col-2">
     <header>
         <div class="top-left">
-
+            <span id="content1">
             <a href="logging/logout.php"><?php if (isset($_SESSION['logged'])) {
                     echo "Wyloguj";
                 }
@@ -98,7 +98,11 @@ $roomClient = new RoomClient();
                 }
                 ?>
             </a>
+            </span>
         </div>
+
+
+
         <div class="top-center">
               <?php
               if (isset($_SESSION['logged']) && isset($_SESSION['Id'])) {
@@ -115,17 +119,23 @@ $roomClient = new RoomClient();
               }
 
               ?>
-        </div>
+
             <nav class="dropdown">
-                <a href="#">Logowanie</a>
-                <ul>
-                    <li><a href="logging/login.php">Zaloguj</a></li>
-                    <li><a href="logging/register.php">Zarejestruj</a></li>
-                </ul>
+<!--                <a href="#">Logowanie</a>-->
+<!--                <ul>-->
+<!--                    <li><a href="logging/login.php">Zaloguj</a></li>-->
+<!--                    <li><a href="logging/register.php">Zarejestruj</a></li>-->
+<!--                </ul>-->
+                <button class="dropbtn">Logowanie</button>
+                <div class="dropdown-content">
+                    <a href="logging/login.php">Zaloguj</a>
+                    <a href="logging/register.php">Zarejestruj</a>
+                </div>
             </nav>
+        </div>
     </header>
 
-    <main class="content" style="margin-left:250px">
+    <main class="content">
         <?php
         if(isset($_POST['current_category'])) {
             $category = $_POST['current_category'];
