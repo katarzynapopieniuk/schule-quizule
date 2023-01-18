@@ -18,14 +18,12 @@ body {
     margin: 16vh 0 0 0;
 }
 .col-1 {
-    /*position: fixed;*/
     display: flex;
     flex-direction: column;
     height: 84vh;
     background: #D7E8D4;
     flex: 1;
     align-self: flex-end;
-    /*min-height: vh;*/
 }
 
 img {
@@ -66,6 +64,11 @@ img {
 }
 
 
+.option:hover {
+    background-color: #4FAF10;
+}
+
+
 
 
 .container {
@@ -85,11 +88,6 @@ img {
 }
 
 .dropdown {
-    /*display: flex;*/
-    /*margin-top: 0;*/
-    /*!*float: right;*!*/
-    /*justify-content: left;*/
-
     position: relative;
     display: inline-block;
 }
@@ -144,9 +142,7 @@ img {
     justify-content: center;;
     line-height: 100px;
     height: 100px;
-    border: 3px solid green;
     text-align: center;
-    /*margin-bottom: 100px;*/
 
 }
 
